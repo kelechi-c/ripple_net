@@ -1,15 +1,19 @@
 from sentence_transformers import SentenceTransformer
 from datasets import load_dataset
+from matplotlib import pyplot
+import time
 
+# load dataset
 image_data = load_dataset(
     "keremberke/painting-style-classification", "full", split="train"
 )
 
-
+# define clip model for multimodal/contrastive image learning...and embeddings
 embed_model = SentenceTransformer("clip-ViT-B-32")
 
+# define helper functions
 
-# define
+
 def map_filenames(sample):
     sample["image_file_path"] = sample["image_file_path"].split("/")[-1]
     return sample["image_file_path"]
@@ -18,6 +22,26 @@ def map_filenames(sample):
 def map_embeddings(sample):
     example["embeddings"] = embed_model.encode(example["image"], device="cuda")
     return example["embeddings"]
+
+
+def get_similar_images(query: str, dataset, k_image):
+    stime = time.time()
+    prompt = model.encode(query)
+    similarity_score, images_embeddings = dataset.get_nearest_examples(
+        "embeddings", prompt, k=k_images
+    )
+    latency = time.time() - stime
+    print(f"Retrieved {k_image} and similarity scores in {latency}")
+    return similarity_score, images_embeddings
+
+
+def image_grid(image_list):
+    pyplot.figure(figsize=(20, 20))
+    columns = 2
+    for k in range(len(image_list)):
+        image = image_list["image"][0]
+        pyplot.subplot(len(image_list) / columns + 1, columns, k + 1)
+        pyplot.imshow(image)
 
 
 image_data = image_data.map(map_filenames)
