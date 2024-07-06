@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "ripple_net"
+version = "0.1.0"
+description = "text-image search and image tagging library"
+authors = ["tensorkelechi <narutokelechi@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[tool.poetry.group.tests.dependencies]
+pytest = "^8.2.2"
+requests-mock = "^1.12.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
