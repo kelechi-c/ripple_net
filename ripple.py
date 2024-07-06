@@ -19,11 +19,6 @@ def map_filenames(sample):
     return sample["image_file_path"]
 
 
-def map_embeddings(sample):
-    example["embeddings"] = embed_model.encode(example["image"], device="cuda")
-    return example["embeddings"]
-
-
 def get_similar_images(query: str, dataset, k_image):
     stime = time.time()
     prompt = model.encode(query)
