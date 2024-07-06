@@ -114,5 +114,5 @@ class ImageSearch:
         for k, score in tqdm(zip(range(len(image_list), scores)), color="blue"):
             image = image_list["image"][k]
             pyplot.subplot(len(image_list) / columns + 1, columns, k + 1)
-            pyplot.title()
+            pyplot.title(f"")
             pyplot.imshow(image)

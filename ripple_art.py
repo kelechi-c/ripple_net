@@ -3,6 +3,7 @@ from datasets import load_dataset
 from matplotlib import pyplot
 import time
 
+import
 # load dataset
 image_data = load_dataset(
     "keremberke/painting-style-classification", "full", split="train"
