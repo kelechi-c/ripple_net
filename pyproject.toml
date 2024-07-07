@@ -4,10 +4,10 @@ version = "0.1.0"
 description = "text-image search and image tagging library"
 authors = ["tensorkelechi <narutokelechi@gmail.com>"]
 readme = "README.md"
+license = 'Apache 2.0'
 
 [tool.poetry.dependencies]
 python = "^3.10"
-
 
 [tool.poetry.group.tests.dependencies]
 pytest = "^8.2.2"

@@ -3,7 +3,6 @@ from datasets import load_dataset
 from matplotlib import pyplot
 import time
 
-import
 # load dataset
 image_data = load_dataset(
     "keremberke/painting-style-classification", "full", split="train"
@@ -43,13 +42,12 @@ def image_grid(image_list):
 image_data = image_data.map(map_filenames)
 
 image_data_embed = image_data.map(
-    lambda example: {"embeddings": embed_model.encode(
-        example["image"], device="cuda")},
+    lambda example: {"embeddings": embed_model.encode(example["image"], device="cuda")},
     batched=True,
     batch_size=64,
-    num_proc=4,
 )
 
+# print features and display sample images
 # print(image_data.features['labels'])
 # image_data[0]['image']
 
@@ -64,3 +62,7 @@ simscore, ret_images = image_data_embed.get_nearest_examples(
 
 # ret_images[0]['image']
 # print(score[0])
+
+scores, similar_images = get_similar_images("a book", image_data_embed, k_image=10)
+
+image_grid(similar_images)
