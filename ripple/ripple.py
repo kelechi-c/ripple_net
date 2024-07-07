@@ -1,11 +1,10 @@
 import os
-import rich
 import time
+import math
 from sentence_transformers import SentenceTransformer  # for clip embedding model
 from datasets import Dataset, load_dataset
 from functools import wraps
-from matplotlib import pyplot
-from tqdm.auto import tqdm
+from matplotlib import pyplot as plt
 
 # Intended functions
 # -get all images, create index > done
@@ -13,106 +12,101 @@ from tqdm.auto import tqdm
 # -auto-labelling
 
 
-def latency_check(unit="seconds"):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            start_time = time.perf_counter()
-            result = func(*args, **kwargs)
-            end_time = time.perf_counter()
+def latency(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(
+            f"latency => {func.__name__}: {end_time - start_time:.4f} seconds")
+        return result
 
-            elapsed_time = end_time - start_time
-
-            if unit == "milliseconds":
-                elapsed_time *= 1000
-                time_unit = "ms"
-            else:
-                time_unit = "s"
-
-            print(
-                f"latency for {func.__name__} => {elapsed_time:.4f} {time_unit}")
-            return result
-
-        return wrapper
-
-    return decorator
+    return wrapper
 
 
-def image_tagger(file_list: list):
-    pass
-
-
-class image_indexer:
-    @latency_check
-    def __init__(self, image_folder):
-        self.image_folder = image_folder
+class ImageEmbedder:
+    @latency
+    def __init__(self, image_data: str, is_hfdataset=False):
+        self.image_dataset = image_data
+        self.is_hfdataset = is_hfdataset
         # load dataset
-        self.image_data = load_dataset("imagefolder", data_dir=image_folder)
-        print(f"image dataset created from {self.image_folder}")
+        if not self.is_hfdataset:
+            self.image_data = (
+                load_dataset(
+                    "imagefolder", data_dir=self.image_data, split="train")
+                if os.path.isdir(self.image_data)
+                else load_dataset(
+                    "imagefolder", data_dir=".", split="train"
+                )  # load from local folder
+            )
+        else:
+            self.image_data = load_dataset(
+                self.image_dataset, split="train"
+            )  # load from huggingface dataset instead
 
+        print(f"image dataset created from {self.image_dataset}")
+        print("----")
         # define clip model for multimodal/contrastive image learning...and embeddings
         print("Initializing clip model")
+        print("....")
         self.embed_model = SentenceTransformer("clip-ViT-B-32")
         print(f"clip/embedding model initalized")
 
-    def map_filenames(sample):
-        sample["image_file_path"] = sample["image_file_path"].split("/")[-1]
-        return sample["image_file_path"]
-
-    @latency_check
-    def create_embeddings(self):
+    @latency
+    def create_embeddings(self, device, batch_size):
         # create embedding class
-        image_data_embed = image_data.map(
+        assert device in [
+            "cuda", "cpu"], "Wrong device id, must be 'cuda' or 'cpu'"
+        image_data_embed = self.image_data.map(
             lambda example: {
-                "embeddings": embed_model.encode(example["image"], device="cuda")
+                "embeddings": self.embed_model.encode(example["image"], device=device)
             },
             batched=True,
-            batch_size=64,
-            num_proc=4,
+            batch_size=batch_size,
         )
         image_data_embed.add_faiss_index(column="embeddings")
         return image_data_embed
-
-    def get_similar_images(query: str, dataset, k_image):
-        stime = time.time()
-        prompt = model.encode(query)
-        similarity_score, images_embeddings = dataset.get_nearest_examples(
-            "embeddings", prompt, k=k_images
-        )
-        latency = time.time() - stime
-        print(f"Retrieved {k_image} and similarity scores in {latency}")
-        return similarity_score, images_embeddings
-
-    def image_grid(image_list):
-        pyplot.figure(figsize=(20, 20))
-        columns = 2
-        for k in range(len(image_list)):
-            image = image_list["image"][0]
-            pyplot.subplot(len(image_list) / columns + 1, columns, k + 1)
-            pyplot.imshow(image)
 
 
 class ImageSearch:
     def __init__(self, dataset: Dataset, model: SentenceTransformer):
         self.embed_model = model
         self.image_dataset = dataset
+        self.k_images = None
 
-    @latency_check
-    def get_similar_images(self, query: str, k_images=10):
+    def get_similar_images(self, query: str, k_images=5):
         stime = time.time()
-        prompt = model.encode(query)
-        similarity_score, images_embeddings = dataset.get_nearest_examples(
+        self.k_images = k_images
+        prompt = self.embed_model.encode(query)
+        similarity_score, image_embeddings = self.image_dataset.get_nearest_examples(
             "embeddings", prompt, k=k_images
         )
         latency = time.time() - stime
-        print(f"Retrieved {k_image} and similarity scores in {latency}")
-        return similarity_score, images_embeddings
+        print("---")
+        print(
+            f"Retrieved {len(image_embeddings['image'])} and similarity scores in {latency:.4f}"
+        )
+        return similarity_score, image_embeddings
 
-    def image_grid(self, image_list, scores):
-        pyplot.figure(figsize=(20, 20))
-        columns = 2
-        for k, score in tqdm(zip(range(len(image_list), scores)), color="blue"):
-            image = image_list["image"][k]
-            pyplot.subplot(len(image_list) / columns + 1, columns, k + 1)
-            pyplot.title(f"")
-            pyplot.imshow(image)
+    def display_imagegrid(self, image_list):
+        try:
+            columns = 4
+            rows = math.ceil(self.k_images / columns)
+
+            fig, axs = plt.subplots(math.floor(
+                rows), columns, figsize=(10, 10))
+
+            # Flatten the 2D array of subplots into a 1D array
+            axs = axs.flatten()
+
+            for k, ax in enumerate(axs):
+                ax.imshow(image_list["image"][k])
+                ax.axis("off")
+
+            plt.show()
+            plt.axis("off")
+
+        except Exception as e:
+            print(e)
+            print("loading grid....")
