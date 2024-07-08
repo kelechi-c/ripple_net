@@ -1,18 +1,60 @@
-[tool.poetry]
+[project]
 name = "ripple_net"
 version = "0.1.0"
-description = "text-image search and image tagging library"
-authors = ["tensorkelechi <narutokelechi@gmail.com>"]
+description = "Text-image search and image tagging library""
+authors = [
+    { name = "Chibuzo Kelechi", email = "kelechichibuzo7@gmail.com" }
+]
 readme = "README.md"
-license = 'Apache 2.0'
+requires-python = ">= 3.7"
+license = { file = "LICENSE" }
+keywords = [
+	'machine learning',
+	'image search',
+	'multimodal AI',
+	'image datasets',
+	'vector embeddings'
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
+classifiers=[
+    'Development Status :: 1 - Beta',
+    'Intended Audience :: Developers',
+    'Topic :: Scientific/Engineering :: Artificial Intelligence',
+    'License :: OSI Approved :: Apache 2.0 License',
+    'Programming Language :: Python :: 3',
+]
 
-[tool.poetry.group.tests.dependencies]
-pytest = "^8.2.2"
-requests-mock = "^1.12.1"
+dependencies = [
+   'sentence-transformers', 'datasets', 
+   'faiss-cpu', 'faiss-gpu', 'matplotlib',
+   'transformers', 'accelerate', 'numpy'
+]
+
+[project.urls]
+Homepage = "https://pypi.org/project/ripple_net/"
+Repository = "https://github.com/kelechi-c/ripple_net"
+
+[project.optional-dependencies]
+examples = []
+test = [
+    "pytest"
+]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["ripple"]
