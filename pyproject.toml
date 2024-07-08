@@ -17,11 +17,11 @@ keywords = [
 ]
 
 classifiers=[
-    'Development Status :: 1 - Beta',
+    'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
     'Topic :: Scientific/Engineering :: Artificial Intelligence',
     'Programming Language :: Python :: 3',
-    'License :: OSI Approved :: Apache Software License',
+    'License :: OSI Approved :: Apache Software License'
 ]
 
 dependencies = [
