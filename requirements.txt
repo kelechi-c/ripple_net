@@ -1,0 +1,6 @@
+sentence-transformers
+datasets
+matplotlib
+faiss-cpu
+faiss-gpu
+
