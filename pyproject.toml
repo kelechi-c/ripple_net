@@ -20,14 +20,14 @@ classifiers=[
     'Development Status :: 1 - Beta',
     'Intended Audience :: Developers',
     'Topic :: Scientific/Engineering :: Artificial Intelligence',
-    'License :: OSI Approved :: Apache 2.0 License',
     'Programming Language :: Python :: 3',
+    'License :: OSI Approved :: Apache Software License',
 ]
 
 dependencies = [
    'sentence-transformers', 'datasets', 
    'faiss-cpu', 'faiss-gpu', 'matplotlib',
-   'transformers', 'accelerate', 'numpy'
+   'transformers', 'numpy'
 ]
 
 [project.urls]

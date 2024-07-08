@@ -19,8 +19,8 @@ setup(
     license="Apache 2.0",
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: Apache 2.0 License",
         "Operating System :: OS Independent",
+        "License :: OSI Approved :: Apache Software License",
     ],
     install_requires=[
         "sentence-transformers",
@@ -28,6 +28,8 @@ setup(
         "faiss-cpu",
         "datasets",
         "matplotlib",
+        "numpy",
+        "transformers",
     ],
     python_requires=">=3.6",
 )
