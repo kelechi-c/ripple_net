@@ -5,6 +5,7 @@ from sentence_transformers import SentenceTransformer  # for clip embedding mode
 from datasets import Dataset, load_dataset
 from functools import wraps
 from matplotlib import pyplot as plt
+from utils import image_grid
 
 # Intended functions
 # -get all images, create index > done
@@ -19,14 +20,14 @@ def latency(func):
         result = func(*args, **kwargs)
         end_time = time.time()
         print(
-            f"latency => {func.__name__}: {end_time - start_time:.4f} seconds")
+            f"latency => {func.__name__}: {end_time - start_time:.4f} seconds")f"latency => {func.__name__}: {end_time - start_time:.4f} seconds")
         return result
 
     return wrapper
 
 
 class ImageEmbedder:
-    @latency
+    @ latency
     def __init__(self, image_data: str, is_hfdataset=False):
         self.image_dataset = image_data
         self.is_hfdataset = is_hfdataset
@@ -34,10 +35,10 @@ class ImageEmbedder:
         if not self.is_hfdataset:
             self.image_data = (
                 load_dataset(
-                    "imagefolder", data_dir=self.image_data, split="train")
+                    "imagefolder", data_dir=self.image_data, split="train")magefolder", data_dir=self.image_data, split="train")
                 if os.path.isdir(self.image_data)
                 else load_dataset(
-                    "imagefolder", data_dir=".", split="train"
+                    "imagefolder", data_dir = ".", split = "train"
                 )  # load from local folder
             )
         else:
@@ -53,11 +54,11 @@ class ImageEmbedder:
         self.embed_model = SentenceTransformer("clip-ViT-B-32")
         print(f"clip/embedding model initalized")
 
-    @latency
+    @ latency
     def create_embeddings(self, device, batch_size):
         # create embedding class
         assert device in [
-            "cuda", "cpu"], "Wrong device id, must be 'cuda' or 'cpu'"
+            "cuda", "cpu"], "Wrong device id, must be 'cuda' or 'cpu'"ice id, must be 'cuda' or 'cpu'"
         image_data_embed = self.image_data.map(
             lambda example: {
                 "embeddings": self.embed_model.encode(example["image"], device=device)
@@ -90,23 +91,4 @@ class ImageSearch:
         return similarity_score, image_embeddings
 
     def display_imagegrid(self, image_list):
-        try:
-            columns = 4
-            rows = math.ceil(self.k_images / columns)
-
-            fig, axs = plt.subplots(math.floor(
-                rows), columns, figsize=(10, 10))
-
-            # Flatten the 2D array of subplots into a 1D array
-            axs = axs.flatten()
-
-            for k, ax in enumerate(axs):
-                ax.imshow(image_list["image"][k])
-                ax.axis("off")
-
-            plt.show()
-            plt.axis("off")
-
-        except Exception as e:
-            print(e)
-            print("loading grid....")
+        columns = 4            columns = 4
