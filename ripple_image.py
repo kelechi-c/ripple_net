@@ -1,23 +1,21 @@
-from math import pi
-from operator import ipow
 from transformers import AutoProcessor, AutoModelForZeroShotImageClassification
 from datasets import load_dataset
 import numpy as np
 from PIL import Image as pillow
 from matplotlib import pyplot as plt
-# from functools import isinstance
 
+
+# configs
 image_folder = ""
 dataset_id = "huggan/few-shot-art-painting"
 model_id = "openai/clip-vit-large-patch14"
 batch_size = 32
-devices = ["cuda", "cpu"]
 device_id = "cuda"
 
 sample_data = load_dataset(dataset_id, split="train")
-
 # sample_data
 
+# define models
 clip_processor = AutoProcessor.from_pretrained(model_id)
 
 clip_model = AutoModelForZeroShotImageClassification(model_id, device_map="cuda")
@@ -35,7 +33,10 @@ def image_loader(img):
 
 
 def grid(images):
-    f, ax = plt.subplots(2, 2)
+    # check if image  count matches grid arrangement
+    assert len(images) % 2 == 0, "Choose an even number to enable grid-show"
+
+    _, ax = plt.subplots(2, 2)
     for index in range(len(images)):
         k, v = index // 2, index % 2
         # ax[k, v].set_title(images["image"][index].filename)
@@ -72,4 +73,7 @@ def image_search(input_img, k_count: int):
     return retrieved_images
 
 
-similar_images = image_search()
+image = "katara.png"
+similar_images = image_search(image, 6)  # search for similar images
+
+grid(similar_images)  # display grid of similar images
