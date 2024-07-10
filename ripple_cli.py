@@ -12,8 +12,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="ripple: cli script for text-image, amd image similarity search :) "
     )
-    parser.add_argument(
-        "-f", "--folder", help="the folder to load images from")
+    parser.add_argument("-f", "--folder", help="the folder to load images from")
     parser.add_argument(
         "-a", "--all", action="store_true", help="use all image files on the device"
     )
@@ -26,8 +25,7 @@ def main():
         embedder = ripple.ImageEmbedder(file_list, retrieval_type="text-image")
 
     else:
-        embedder = ripple.ImageEmbedder(
-            args.folder, retrieval_type="text-image")
+        embedder = ripple.ImageEmbedder(args.folder, retrieval_type="text-image")
 
     print(f"creating embeddings using {embedder.embed_model}...")
     embedded_data = embedder.create_embeddings(device="cpu")

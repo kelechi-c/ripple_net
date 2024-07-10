@@ -2,10 +2,6 @@
 *(still in development)*
 #### text/Image based search and retrieval for image datasets/files
 
-Install with 
-
-(I name things weirdly :/)
-
 #### Usage guide
 - Installation
 

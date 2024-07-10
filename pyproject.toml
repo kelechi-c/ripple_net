@@ -1,12 +1,12 @@
 [project]
 name = "ripple_net"
-version = "0.1.0"
+version = "0.1.1"
 description = "Text-image search and image tagging library"
 authors = [
     { name = "Chibuzo Kelechi", email = "kelechichibuzo7@gmail.com" }
 ]
 readme = "README.md"
-requires-python = ">= 3.7"
+requires-python = ">= 3.9"
 license = { file = "LICENSE" }
 keywords = [
 	'machine learning',
