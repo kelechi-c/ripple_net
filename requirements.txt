@@ -4,5 +4,4 @@ matplotlib
 faiss-cpu
 faiss-gpu
 streamlit
-torch
 transformers
