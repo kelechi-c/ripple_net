@@ -1,7 +1,7 @@
 from typing import Literal
 from datasets import Dataset
 from PIL import Image as pillow
-from utils import image_grid, image_loader
+from .utils import image_grid, image_loader
 from transformers import AutoProcessor, AutoModelForZeroShotImageClassification
 import time
 

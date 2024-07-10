@@ -1,49 +1,49 @@
-import os
-from datasets import load_dataset
+from datasets import Dataset, load_dataset, Image
 from sentence_transformers import SentenceTransformer
 from transformers import AutoProcessor, AutoModelForZeroShotImageClassification
-from utils import latency
+from utils import latency, get_all_images
 from typing import Literal
+import os
 
 
 class ImageEmbedder:
-    @latency
     def __init__(
         self,
         image_data: str,
         retrieval_type: Literal["text-image", "image-image"],
-        is_hfdataset=False,
+        dataset_type: Literal["huggingface", "imagefile list", "image folder"],
     ):
         assert retrieval_type in [
-            "text_image",
-            "image_image",
+            "text-image",
+            "image-image",
         ], "retrieval/search type must be either 'image-image' or 'text-image'"
 
         # initial variables
-        self.image_dataset = None
+        # self.image_dataset = None
+        self.dataset_type = dataset_type
         self.data_path = image_data
-        self.is_hfdataset = is_hfdataset
         self.retrieval_type = retrieval_type
         self.embed_model = None
         self.processor_model = None
         self.device = None
 
-        # load dataset
-        if not self.is_hfdataset:
-            self.image_dataset = (
-                load_dataset("imagefolder", data_dir=image_data, split="train")
-                if os.path.isdir(image_data)
-                else load_dataset(
-                    "imagefolder", data_dir=".", split="train"
-                )  # load from local root folder
-            )
-        else:
+        # load dataset for different dataset types
+        print(f"Loading huggingface dataset from {image_data}")
+        if self.dataset_type == "huggingface":
             self.image_dataset = load_dataset(
                 image_data, split="train"
             )  # load from huggingface dataset instead
 
+        elif self.dataset_type == "image folder":
+            if os.path.exists(self.data_path):
+                image_list = get_all_images(image_data)
+                self.image_dataset = Dataset.from_dict(
+                    {"image": image_list}
+                ).cast_column("image", Image())
+
         print(f"image dataset created from {image_data}")
         print("----")
+
         # define clip model for multimodal/contrastive image learning...and embeddings
         print("Initializing CLIP model")
         print("....")
@@ -65,7 +65,9 @@ class ImageEmbedder:
     @latency
     def create_embeddings(self, device: Literal["cuda", "cpu"], batch_size: int = 32):
         assert device in [
-            "cuda", "cpu"], "Wrong device id, must be 'cuda' or 'cpu'"
+            "cuda",
+            "cpu",
+        ], "Wrong id, device must must be either 'cuda' or 'cpu'"
 
         image_embeddings = None
         self.device = device
@@ -87,15 +89,19 @@ class ImageEmbedder:
 
         image_embeddings.add_faiss_index(column="embeddings")
         print(
-            f"vector embeddings and faiss-index created for {self.data_path}")
+            f"Image vector embeddings and FAISS-index created for {self.data_path}")
         return image_embeddings
 
     def _embed_image_batch(self, batch):
-        pixels = self.processor_model(images=batch["image"], return_tensors="pt")[
-            "pixel_values"
-        ]
-        pixels = pixels.to(self.device)
+        try:
+            pixels = self.processor_model(images=batch["image"], return_tensors="pt")[
+                "pixel_values"
+            ]
+            pixels = pixels.to(self.device)
 
-        image_embedding = self.embed_model.get_image_features(pixels)
-        batch["embeddings"] = image_embedding
-        return batch
+            image_embedding = self.embed_model.get_image_features(pixels)
+            batch["embeddings"] = image_embedding
+            return batch
+
+        except Exception as e:
+            print(e)
