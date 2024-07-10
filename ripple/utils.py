@@ -3,6 +3,8 @@ from functools import wraps
 from matplotlib import pyplot as plt
 from PIL import Image as pillow
 import time
+import os
+import glob
 
 
 def latency(func):
@@ -39,4 +41,14 @@ def image_grid(images):
         # ax[k, v].set_title(images["image"][index].filename)
         ax[k, v].imshow(images["image"][index])
         ax[k, v].axis("off")
+
     plt.show()
+
+
+def get_all_images(root_dir, extensions=("*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp")):
+    image_files = []
+    for ext in extensions:
+        for directory, _, _ in os.walk(root_dir):
+            image_files.extend(glob.glob(os.path.join(directory, ext)))
+    print(f"found {len(image_files)} images in {root_dir}")
+    return image_files

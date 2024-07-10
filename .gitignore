@@ -1,4 +1,5 @@
 ignore
 ripple.ipynb
 poetry.lock
+ripple/__pycache__
 `
