@@ -42,7 +42,8 @@ def main():
         print(score)
         print("----")
 
-    display_image = ripple.image_loader(ret_images[0])
+    text_search.show_grid(ret_images)
+    display_image = ripple.image_loader(ret_images["image"][0])
     display_image.show()
 
 

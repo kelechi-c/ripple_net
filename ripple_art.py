@@ -11,22 +11,21 @@ image_data = load_dataset(
 # define clip model for multimodal/contrastive image learning...and embeddings
 embed_model = SentenceTransformer("clip-ViT-B-32")
 
+
 # define helper functions
-
-
 def map_filenames(sample):
     sample["image_file_path"] = sample["image_file_path"].split("/")[-1]
     return sample["image_file_path"]
 
 
-def get_similar_images(query: str, dataset, k_image):
+def get_similar_images(query: str, dataset, k_images):
     stime = time.time()
-    prompt = model.encode(query)
+    prompt = embed_model.encode(query)
     similarity_score, images_embeddings = dataset.get_nearest_examples(
         "embeddings", prompt, k=k_images
     )
     latency = time.time() - stime
-    print(f"Retrieved {k_image} and similarity scores in {latency}")
+    print(f"Retrieved {k_images} and similarity scores in {latency}")
     return similarity_score, images_embeddings
 
 
@@ -42,7 +41,8 @@ def image_grid(image_list):
 image_data = image_data.map(map_filenames)
 
 image_data_embed = image_data.map(
-    lambda example: {"embeddings": embed_model.encode(example["image"], device="cuda")},
+    lambda example: {"embeddings": embed_model.encode(
+        example["image"], device="cuda")},
     batched=True,
     batch_size=64,
 )
@@ -63,6 +63,8 @@ simscore, ret_images = image_data_embed.get_nearest_examples(
 # ret_images[0]['image']
 # print(score[0])
 
-scores, similar_images = get_similar_images("a book", image_data_embed, k_image=10)
+scores, similar_images = get_similar_images(
+    "blue flowing river", image_data_embed, k_images=10
+)
 
 image_grid(similar_images)
