@@ -38,7 +38,8 @@ class ImageSearch:
         scores, retrieved_images = self.embedded_data.get_nearest_examples(
             "embeddings", img_embed, k=k_count
         )
-        print(f"Retrieved {len(retrieved_images)} in ")
+        exec_time = stime - time.time()
+        print(f"Retrieved {len(retrieved_images)} in {exec_time}")
         return scores, retrieved_images
 
     def show_grid(self, images):
