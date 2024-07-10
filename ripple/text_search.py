@@ -1,5 +1,5 @@
 import time
-from utils import image_grid
+from .utils import image_grid
 from datasets import Dataset
 from sentence_transformers import SentenceTransformer
 

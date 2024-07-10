@@ -1,7 +1,7 @@
 from datasets import Dataset, load_dataset, Image
 from sentence_transformers import SentenceTransformer
 from transformers import AutoProcessor, AutoModelForZeroShotImageClassification
-from utils import latency, get_all_images
+from .utils import latency, get_all_images
 from typing import Literal
 import os
 

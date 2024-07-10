@@ -25,3 +25,6 @@ text_search.image_grid(images, scores) #dislay grid of returned images
 
 - For image-based retrieval
 .....
+
+```python
+
