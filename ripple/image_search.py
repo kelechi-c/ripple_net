@@ -13,8 +13,7 @@ class ImageSearch:
         # initalize class and CLIP models
         self.model_id = "openai/clip-vit-large-patch14"
         self.device_id = device
-        self.clip_model = AutoModelForZeroShotImageClassification(
-            self.model_id)
+        self.clip_model = AutoModelForZeroShotImageClassification(self.model_id)
         self.clip_processor = AutoProcessor.from_pretrained(self.model_id)
         assert (
             "embeddings" in embedded_dataset.column_names
@@ -30,8 +29,7 @@ class ImageSearch:
         pixel_values = self.clip_processor(images=input_img, return_tensors="pt")[
             "pixel_values"
         ]
-        pixel_values = pixel_values.to(
-            self.device_id)  # move tensors to device
+        pixel_values = pixel_values.to(self.device_id)  # move tensors to device
         img_embed = self.clip_model.get_image_features(pixel_values)[0]
         img_embed = img_embed.detach().cpu().numpy()
 
