@@ -22,7 +22,7 @@ embedder = ImageEmbedder('huggan/wikiart', retrieval_type='text-image', dataset_
 embedded_images = embedder.create_embeddings(device="cuda", batch_size=32)
 
 # initialize text - image search class
-text_search = TextSearch(embedded_data, embedder.embed_model)
+text_search = TextSearch(embedded_images, embedder.embed_model)
 
 # specify text/search query for image, and number of results to return
 scores, images = text_search.get_similar_images(query='painting of a river', k_images=10) 
@@ -42,7 +42,7 @@ embedder = ImageEmbedder('lambdalabs/naruto-blip-captions', retrieval_type='imag
 embedded_images = embedder.create_embeddings(device="cuda", batch_size=32)
 
 # init image search class
-image_search = ImageSearch(embedded_data, embedder.embed_model)
+image_search = ImageSearch(embedded_images, embedder.embed_model)
 
 # retrieve similar images with image input
 input_image = image_loader('katara.png') # use library function to load image in PIL format
