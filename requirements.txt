@@ -6,5 +6,4 @@ faiss-gpu
 streamlit
 transformers
 tqdm
-tensorflow
 ripple_net
