@@ -56,7 +56,7 @@ class ImageEmbedder:
             self.processor_model = AutoProcessor.from_pretrained(
                 "openai/clip-vit-large-patch14"
             )
-            self.embed_model = AutoModelForZeroShotImageClassification(
+            self.embed_model = AutoModelForZeroShotImageClassification.from_pretrained(
                 "openai/clip-vit-large-patch14"
             )
 
@@ -88,8 +88,7 @@ class ImageEmbedder:
             image_embeddings = self.image_dataset.map(self._embed_image_batch)
 
         image_embeddings.add_faiss_index(column="embeddings")
-        print(
-            f"Image vector embeddings and FAISS-index created for {self.data_path}")
+        print(f"Image vector embeddings and FAISS-index created for {self.data_path}")
         return image_embeddings
 
     def _embed_image_batch(self, batch):

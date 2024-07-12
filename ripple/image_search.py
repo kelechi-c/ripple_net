@@ -13,7 +13,9 @@ class ImageSearch:
         # initalize class and CLIP models
         self.model_id = "openai/clip-vit-large-patch14"
         self.device_id = device
-        self.clip_model = AutoModelForZeroShotImageClassification(self.model_id)
+        self.clip_model = AutoModelForZeroShotImageClassification.from_pretrained(
+            self.model_id
+        )
         self.clip_processor = AutoProcessor.from_pretrained(self.model_id)
         assert (
             "embeddings" in embedded_dataset.column_names
