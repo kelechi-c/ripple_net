@@ -1,6 +1,6 @@
 ## ripple_net *(wip)*
 
-A library for text/image based search/retrieval for image datasets and files. Uses multimodal AI techniques/models like vector embeddings, CLIP.
+A library for text/image based search/retrieval for image datasets and files. Uses multimodal AI techniques/models like vector embeddings and CLIP.
 
 ## Install
 
@@ -27,7 +27,7 @@ text_search = TextSearch(embedded_images, embedder.embed_model)
 # specify text/search query for image, and number of results to return
 scores, images = text_search.get_similar_images(query='painting of a river', k_images=10) 
 
-text_search.show_grid(images, scores) # dislay grid of returned images (optional)
+images['image'][0].show()
 ```
 
 - For image-based retrieval(image-image search)
@@ -49,8 +49,9 @@ input_image = image_loader('katara.png') # use library function to load image in
 
 scores, images = image_search.image_search(input_img=input_image, k_images=5) # specify input image, and number of results to return
 
-# dislay grid of retrieved images
-image_search.show_grid(images, scores) 
+# dislay one of retrieved images
+images['image'][0].show()
+# or using notebooks => images['image'][0]
 ```
 
 ## Todo

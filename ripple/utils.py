@@ -13,8 +13,7 @@ def latency(func):
         start_time = time.time()
         result = func(*args, **kwargs)
         end_time = time.time()
-        print(
-            f"latency => {func.__name__}: {end_time - start_time:.4f} seconds")
+        print(f"latency => {func.__name__}: {end_time - start_time:.4f} seconds")
         return result
 
     return wrapper
@@ -33,16 +32,21 @@ def image_loader(img):
 
 def image_grid(images):
     # check if image  count matches grid arrangement
-    assert len(images) % 2 == 0, "Choose an even number to enable grid-show"
+    try:
+        image_len = len(images["image"])
+        assert image_len % 2 == 0, "Choose an even number to enable grid-show"
 
-    f, ax = plt.subplots(2, 2)
-    for index in range(len(images)):
-        k, v = index // 2, index % 2
-        # ax[k, v].set_title(images["image"][index].filename)
-        ax[k, v].imshow(images["image"][index])
-        ax[k, v].axis("off")
+        f, ax = plt.subplots(2, 2)
+        for index in range(image_len):
+            k, v = index // 2, index % 2
+            # ax[k, v].set_title(images["image"][index].filename)
+            ax[k, v].imshow(images["image"][index])
+            ax[k, v].axis("off")
 
-    plt.show()
+        plt.show()
+
+    except Exception as e:
+        print(f"Error in grid display ==> {e}")
 
 
 def get_all_images(root_dir, extensions=("*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp")):
