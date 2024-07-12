@@ -39,7 +39,7 @@ class ImageSearch:
             "embeddings", img_embed, k=k_count
         )
         exec_time = stime - time.time()
-        print(f"Retrieved {len(retrieved_images)} in {exec_time}")
+        print(f"Retrieved {len(retrieved_images)} in {exec_time} seconds")
         return scores, retrieved_images
 
     def show_grid(self, images):

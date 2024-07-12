@@ -1,7 +1,7 @@
 from sentence_transformers import SentenceTransformer, util
 import os
 import shutil
-from .utils import image_loader, get_all_images
+from .utils import image_loader, get_all_images, latency
 from tqdm.auto import tqdm
 
 
@@ -20,6 +20,7 @@ class ImageTagger:
         for k, image in enumerate(tqdm(self.file_list)):
             self.rename_image(image, captions, caption_emb, k)
 
+    @latency
     def rename_image(self, image_path, captions, caption_emb, k):
         try:
             img_emb = self.clip_model.encode(image_loader(image_path))

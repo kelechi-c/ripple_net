@@ -54,13 +54,29 @@ images['image'][0].show()
 # or using notebooks => images['image'][0]
 ```
 
+- For auto image tagging/renaming
+
+```python
+from ripple import ImageTagger
+
+# initialize the class with folder of choice
+folder = '/kaggle/working/images/drawings'
+
+tagger = ImageTagger(folder)
+
+# captions to label with
+captions = ['humans', 'animals', 'plants','land']
+
+tagger.auto_tagger(captions) # rename all images and move to folders
+```
+
 ## Todo
 
 ### coming soon
-- [ ] add auto-image file tagging/renaming
+- [] add auto-image file tagging/renaming
 - [ ] direct CLI usage
 
 ## Acknowledgement
 - <a href="https://huggingface.co/blog/not-lain/image-retriever">Image search engine</a>: article by <a href="https://github.com/not-lain">not-lain </a>
+- <a href="https://sbert.net/">Sentence transformers </a> library by UKPLabs and Huggingface transformers.
 - <a href="https://openai.com/index/clip/">CLIP (Contrastive Language–Image Pre-training)</a> research by OpenAI.
-
