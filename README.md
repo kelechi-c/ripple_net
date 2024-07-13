@@ -36,7 +36,8 @@ images['image'][0].show()
 from ripple import ImageEmbedder, ImageSearch, image_loader
 
  # load dataset and initialize embedding class
-embedder = ImageEmbedder('lambdalabs/naruto-blip-captions', retrieval_type='image-image', dataset_type='huggingface')
+embedder = ImageEmbedder('lambdalabs/naruto-blip-captions', retrieval_type='image-image', dataset_type='huggingface',  device='cuda',
+)
 
 # generate embeddings
 embedded_images = embedder.create_embeddings(device="cuda", batch_size=32)
@@ -72,11 +73,10 @@ tagger.auto_tagger(captions) # rename all images and move to folders
 
 ## Todo
 
-### coming soon
-- [] add auto-image file tagging/renaming
 - [ ] direct CLI usage
 
 ## Acknowledgement
-- <a href="https://huggingface.co/blog/not-lain/image-retriever">Image search engine</a>: article by <a href="https://github.com/not-lain">not-lain </a>
+
 - <a href="https://sbert.net/">Sentence transformers </a> library by UKPLabs and Huggingface transformers.
+- <a href="https://huggingface.co/blog/not-lain/image-retriever">Image search engine</a>: article by <a href="https://github.com/not-lain">not-lain </a>
 - <a href="https://openai.com/index/clip/">CLIP (Contrastive Language–Image Pre-training)</a> research by OpenAI.

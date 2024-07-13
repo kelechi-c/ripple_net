@@ -11,7 +11,7 @@ class ImageEmbedder:
         self,
         image_data: str,
         retrieval_type: Literal["text-image", "image-image"],
-        dataset_type: Literal["huggingface", "imagefile list", "image folder"],
+        dataset_type: Literal["huggingface", "image folder"],
         device: Literal["cuda", "cpu"],
     ):
         assert retrieval_type in [
