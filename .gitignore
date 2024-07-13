@@ -3,4 +3,4 @@ ripple.ipynb
 poetry.lock
 ripple/__pycache__
 .ripple_env/
-
+.ruff_cache

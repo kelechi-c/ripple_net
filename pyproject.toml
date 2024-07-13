@@ -1,6 +1,6 @@
 [project]
 name = "ripple_net"
-version = "0.1.4"
+version = "0.1.5"
 description = "Text-image search and image tagging library"
 authors = [
     { name = "Chibuzo Kelechi", email = "kelechichibuzo7@gmail.com" }

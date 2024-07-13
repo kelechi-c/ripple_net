@@ -14,7 +14,7 @@ class ImageSearch:
         self.model_id = "openai/clip-vit-large-patch14"
         self.device_id = device
         self.clip_model = AutoModelForZeroShotImageClassification.from_pretrained(
-            self.model_id
+            self.model_id, device_map=self.device_id
         )
         self.clip_processor = AutoProcessor.from_pretrained(self.model_id)
         assert (

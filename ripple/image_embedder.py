@@ -12,6 +12,7 @@ class ImageEmbedder:
         image_data: str,
         retrieval_type: Literal["text-image", "image-image"],
         dataset_type: Literal["huggingface", "imagefile list", "image folder"],
+        device: Literal["cuda", "cpu"],
     ):
         assert retrieval_type in [
             "text-image",
@@ -25,7 +26,7 @@ class ImageEmbedder:
         self.retrieval_type = retrieval_type
         self.embed_model = None
         self.processor_model = None
-        self.device = None
+        self.device = device
 
         # load dataset for different dataset types
         print(f"Loading huggingface dataset from {image_data}")
@@ -57,7 +58,7 @@ class ImageEmbedder:
                 "openai/clip-vit-large-patch14"
             )
             self.embed_model = AutoModelForZeroShotImageClassification.from_pretrained(
-                "openai/clip-vit-large-patch14"
+                "openai/clip-vit-large-patch14", device_map=self.device
             )
 
         print(f"clip/embedding model -[{self.embed_model}] initialized")
@@ -92,15 +93,12 @@ class ImageEmbedder:
         return image_embeddings
 
     def _embed_image_batch(self, batch):
-        try:
-            pixels = self.processor_model(images=batch["image"], return_tensors="pt")[
-                "pixel_values"
-            ]
-            pixels = pixels.to(self.device)
+        pixels = self.processor_model(images=batch["image"], return_tensors="pt")[
+            "pixel_values"
+        ]
+        pixels = pixels.to(self.device)
 
-            image_embedding = self.embed_model.get_image_features(pixels)
-            batch["embeddings"] = image_embedding
-            return batch
+        image_embedding = self.embed_model.get_image_features(pixels)
+        batch["embeddings"] = image_embedding
 
-        except Exception as e:
-            print(e)
+        return batch
